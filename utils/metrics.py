@@ -1,10 +1,8 @@
 ''' metric computation including PSNR and SSIM '''
 import torch
 import numpy as np
-from utils.imtools import torch2np
-import numpy
-from scipy import signal
 
+from utils.imtools import torch2np
 
 
 def psnr(img1,img2, cut=30):
@@ -16,6 +14,13 @@ def psnr(img1,img2, cut=30):
     mse = np.mean((img1 - img2) ** 2)
     return 10 * np.log10(PIXEL_MAX **2 / mse)
 
+def aver_psnr(img1,img2):
+    ''' For images with same size and stored by a matrix'''
+    PSNR = 0
+    assert img1.size() == img2.size()
+    for i in range(img1.size()[0]):
+        PSNR += psnr(img1[i,...], img2[i,...])
+    return PSNR / img1.size()[0]
 
 def aver_psnr_ds(img1, img2, to_int = True):
     ''' For images with different size and stored by a list'''
@@ -41,6 +46,16 @@ def aver_psnr_ds(img1, img2, to_int = True):
 
 
 
+import numpy
+from scipy import signal
+
+
+def aver_ssim(img1,img2):
+    SSIM = 0
+    assert img1.size() == img2.size()
+    for i in range(img1.size()[0]):
+        SSIM += ssim(img1[i,...], img2[i,...])
+    return SSIM / img1.size()[0]
 
 def aver_ssim_ds(img1, img2, to_int=True):
     ''' For images with different size and stored by a list'''

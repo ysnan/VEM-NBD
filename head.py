@@ -31,6 +31,7 @@ def log(args):
         copyfile(os.path.basename(__file__), 'result/' + args.info + '/scripts/' + os.path.basename(__file__))
         copyfile('config.py', 'result/' + args.info + '/scripts/config.py')
         copyfile('head.py', 'result/' + args.info + '/scripts/head.py')
+        copyfile('train.py', 'result/' + args.info + '/scripts/train.py')
         copyfile('test.py', 'result/' + args.info + '/scripts/test.py')
         copytree('./data_loader/', 'result/' + args.info + '/scripts/data_loader')
         copytree('./model/', 'result/' + args.info + '/scripts/model')

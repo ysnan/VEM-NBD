@@ -34,7 +34,7 @@ class Tester():
             for i, bat in enumerate(self.test_DLoader[name]):
                 bat_x.append(bat['bl'])
                 bat_y.append(bat['sp'])
-                opt_db, _ = self.eval_net(bat['bl'].cuda(), bat['Fker'].cuda())
+                opt_db, opt_dn = self.eval_net(bat['bl'].cuda(), bat['Fker'].cuda())
                 bat_opt.append(opt_db[-1].cpu())
 
             print('-------%s-------'%(name))
@@ -62,6 +62,20 @@ class Tester():
             bl = bl.cuda()
             db = self.net(bl,*args)
         return db
+
+    @staticmethod
+    def _ker_to_list(ker):
+        import numpy as np
+        ker = ker.numpy()
+        Kker = [None] * ker.shape[0]
+        for i in range(ker.shape[0]):
+            x, y = np.where(~np.isnan(ker[i]))
+            x_max = np.max(x)
+            y_max = np.max(y)
+            Kker[i] = ker[i, :x_max, :y_max]
+        return Kker
+
+
 
 
 if __name__ == "__main__":

@@ -98,6 +98,19 @@ def generate_wavelet(frame=1, dim = 2, highpass = True):
             del Rec[1,0,0,0]
     return Dec, Rec
 
+def get_grad_filter():
+    Dec = {}
+    Dec[0, 0, 0] = np.array([[1, -1]])
+    Dec[0, 0, 1] = np.array([[1], [-1]])
+    return Dec
+
+def get_four_filter():
+    Dec = {}
+    Dec[0, 0, 0] = np.array([[1, -1]])
+    Dec[0, 0, 1] = np.array([[1], [-1]])
+    Dec[0, 1, 0] = np.array([[1, 0],[0,-1]])
+    Dec[0, 1, 1] = np.array([[-1,0],[0,1]])
+    return Dec
 def wv_norm(Dec, dtype=np.float32):
     chan = len(Dec)
     WvNorm = np.zeros(chan,dtype=dtype)
@@ -149,6 +162,22 @@ def wv_dec(x, Dec = None, weights = None):
             j = 0
             for idx in Dec:
                 z[i,j,] = cconv_torch(x_s[0,],Dec[idx]) * w[j]
+                j += 1
+    return z
+
+def wv_rec(x, Rec = None):
+    with torch.no_grad():
+        img_num = x.size()[0]
+        img_shape = x.size()[2:]
+        if Rec is None:
+            _, Rec = generate_wavelet(1,dim=2)
+
+        z = torch.zeros((img_num, 1, *img_shape)).cuda()
+        for i in range(img_num):
+            x_s = x[i,]
+            j = 0
+            for idx in Rec:
+                z[i,0,] += cconv_torch(x_s[j,],Rec[idx])
                 j += 1
     return z
 

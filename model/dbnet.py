@@ -1,4 +1,3 @@
-''' Genereal network structure with Dn-CNN, Db-INV and P-FCN '''
 from utils import comfft as cf
 from utils.wavelet import generate_wavelet, wv_norm, Fwv, wv_dec
 import torch
